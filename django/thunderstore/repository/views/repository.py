@@ -679,18 +679,21 @@ class PackageDownloadView(CommunityMixin, View):
                 Package,
                 owner__name=owner,
                 name=name,
+                is_active=True,
             )
         else:
             package = get_object_or_404(
                 PackageListing,
                 package__owner__name=owner,
                 package__name=name,
+                package__is_active=True,
                 community=self.community,
             ).package
         version = get_object_or_404(
             PackageVersion,
             package=package,
             version_number=version,
+            is_active=True,
         )
         version.maybe_increase_download_counter(self.request)
         return redirect(self.request.build_absolute_uri(version.file.url))
