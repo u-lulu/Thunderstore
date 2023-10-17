@@ -8,6 +8,7 @@ import { MarkdownPreviewPage } from "./markdown";
 import { ManifestValidationPage } from "./manifest";
 import { PackageManagementPanel } from "./components/PackageManagement/Panel";
 import { PageEditPage } from "./components/WikiEditor/PageEditor";
+import { ReportButton } from "./components/ReportModal/ReportButton";
 
 Sentry.init({
     // TODO: Add as a build variable instead
@@ -35,5 +36,6 @@ const CreateComponent = (
     MarkdownPreviewPage: CreateComponent(MarkdownPreviewPage),
     ManifestValidationPage: CreateComponent(ManifestValidationPage),
     PackageManagementPanel: CreateComponent(PackageManagementPanel),
+    ReportButton: CreateComponent(ReportButton),
     PageEditPage: CreateComponent(PageEditPage),
 };

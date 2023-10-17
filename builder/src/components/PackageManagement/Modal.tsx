@@ -1,13 +1,10 @@
 import React, { CSSProperties } from "react";
 import { useManagementContext } from "./Context";
-import {
-    PackageListingUpdateForm,
-    useOnEscape,
-    usePackageListingUpdateForm,
-} from "./hooks";
+import { PackageListingUpdateForm, usePackageListingUpdateForm } from "./hooks";
 import { PackageStatus } from "./PackageStatus";
 import { CategoriesSelect } from "./CategoriesSelect";
 import { DeprecationForm } from "./Deprecation";
+import { useOnEscape } from "../../hooks/useOnEscape";
 
 const Header: React.FC = () => {
     const context = useManagementContext();
