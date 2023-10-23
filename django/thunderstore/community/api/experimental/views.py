@@ -5,10 +5,12 @@ from rest_framework import status
 from rest_framework.exceptions import PermissionDenied
 from rest_framework.generics import GenericAPIView, ListAPIView, get_object_or_404
 from rest_framework.pagination import CursorPagination
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from thunderstore.community.api.experimental.serializers import (
+    PackageListingReportRequestSerializer,
     PackageListingUpdateRequestSerializer,
     PackageListingUpdateResponseSerializer,
 )
@@ -130,3 +132,32 @@ class PackageListingUpdateApiView(GenericAPIView):
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             raise PermissionDenied()
+
+
+class PackageListingReportApiView(GenericAPIView):
+    queryset = PackageListing.objects.active().select_related(
+        "community",
+        "package",
+    )
+    permission_classes = [IsAuthenticated]
+
+    @swagger_auto_schema(
+        operation_id="experimental.package_listing.update",
+        request_body=PackageListingReportRequestSerializer,
+        responses={200: "Success"},
+        tags=["experimental"],
+    )
+    def post(self, request, *args, **kwargs):
+        listing: PackageListing = self.get_object()
+        request_serializer = PackageListingReportRequestSerializer(
+            data=request.data, context={"community": listing.community}
+        )
+        request_serializer.is_valid(raise_exception=True)
+        from thunderstore.repository.models import PackageVersion
+
+        version: PackageVersion = PackageVersion.objects.filter(
+            pk=request_serializer.validated_data["package_version_id"]
+        ).first()
+        if version:
+            raise PermissionDenied(f"You tried to report {version.full_version_name}")
+        return Response({"success": True})
